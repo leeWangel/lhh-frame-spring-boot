@@ -30,3 +30,6 @@ spring-boot框架
   mysql、oracle
   thymeleaf
   layui
+
+ ## 初始化数据库
+  sql/init-mysql.sql
