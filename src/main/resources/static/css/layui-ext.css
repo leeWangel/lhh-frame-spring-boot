@@ -1,0 +1,47 @@
+.layui-main {
+    width: inherit;
+    margin: 0 10px;
+}
+.layui-form-label {
+    padding:5px 0;
+}
+@media screen and (max-width: 450px){
+
+.layui-form-item .layui-input-inline {
+    margin: 0 0 10px 82px;
+}
+}
+.layui-input, .layui-select, .layui-textarea, .layui-btn, .layui-upload-button {
+    line-height: 30px;
+    height:30px;
+}
+.layui-btn-mini {
+    line-height: 22px;
+    height:22px;
+}
+.layui-laypage {
+    margin:0px;
+}
+
+.layui-form-select dl {
+    top:30px;
+}
+.layui-form-radio {
+    margin:3px 10px 3px 0;
+}
+.layui-form-switch {
+    margin:4px 0;
+}
+.layui-form-checkbox span {
+    padding:0 2px;
+}
+.layui-form-item .layui-form-checkbox[lay-skin=primary] {
+    margin-top:7px;
+}
+/**
+与layui无关,附加功能，因在引用layui的页面中生效，所以加在此扩展样式文件中
+ */
+.form-text {
+    line-height: 30px;
+    color: rgb(0,93,148);
+}

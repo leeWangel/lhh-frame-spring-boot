@@ -1,0 +1,73 @@
+spring:
+  profiles:
+    active: dev
+  thymeleaf:
+    encoding: utf-8
+    content-type: text/html
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 连接数：初始，最小，最大
+    initialSize: 10
+    minIdle: 10
+    maxActive: 30
+    # 获取连接时最大等待时间，单位毫秒
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 连接保持空闲而不被驱逐的最长时间，单位毫秒
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+    poolPreparedStatements: true
+    keepAlive: true
+    # 在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+    maxPoolPreparedStatementPerConnectionSize: 100
+    # 配置扩展插件，常用的插件有：监控统计:stat，日志:log4j，防御sql注入:wall
+    filters: stat,wall,log4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录（单位毫秒）
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 合并多个DruidDataSource的监控数据
+    useGlobalDataSourceStat: true
+  jpa:
+    database: oracle
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle10gDialect
+server:
+  port: 8888
+
+shiro:
+  realm-class: com.core.shiro.UserRealm
+  login-url: /
+  logout-url: /
+  success-url: /index
+  unauthorized-url: /unauthorized
+  globalSessionTimeout: 3600000
+  filter-chain-definitions:
+    /css/**: anon
+    /js/**: anon
+    /images/**: anon
+    /lib/**: anon
+    /page/**: anon
+    /login: anon
+    /druid/**: anon
+    /**: authc
+#------------  开发环境 --------------#
+---
+spring:
+  profiles: dev
+  thymeleaf:
+    # 开发阶段关闭缓存
+    cache: false
+  datasource:
+    url: jdbc:oracle:thin:@116.236.166.130:1521:orcl
+    username: yhap2
+    password: yhap2
+  jpa:
+    show-sql: true

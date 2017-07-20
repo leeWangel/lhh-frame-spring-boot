@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>用户编辑</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/css/layui-ext.css}" media="all"/>
+</head>
+<body style="margin:30px;">
+<form class="layui-form" action="">
+    <input type="hidden" name="id" th:value="${entity.id}"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名：</label>
+        <div class="layui-input-inline">
+            <input type="text" name="username" lay-verify="required" autocomplete="off" class="layui-input" th:value="${entity.username}"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码：</label>
+        <div class="layui-input-inline">
+            <input type="password" th:if="${entity.id==null}" lay-verify="required" name="password" autocomplete="off" class="layui-input"/>
+            <input type="password" th:unless="${entity.id==null}" name="password" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">重复密码：</label>
+        <div class="layui-input-inline">
+            <input type="password" th:if="${entity.id==null}" lay-verify="required" name="passwordConfirm" autocomplete="off" class="layui-input"/>
+            <input type="password" th:unless="${entity.id==null}" name="passwordConfirm" autocomplete="off" class="layui-input"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item" pane="">
+        <label class="layui-form-label">角色：</label>
+        <div class="layui-input-inline">
+            <input th:each="item : ${sysRoleList}"
+                   type="checkbox" name="roleIds" th:value="${item.id}"
+                   lay-skin="primary"
+                   th:title="${item.name}"
+                   th:disabled="${item.status!=1}" th:checked="${item.checked}"/>
+        </div>
+    </div>
+    <div class="layui-form-item" th:if="${entity!=null and entity.createTime!=null}">
+        <label class="layui-form-label">创建时间：</label>
+        <div class="layui-input-inline">
+            <span class="form-text" th:text="${#dates.format(entity.createTime, 'yyyy-MM-dd HH:mm:ss')}"/>
+        </div>
+    </div>
+
+    <div class="layui-form-item" style="text-align: center;">
+        <input type="submit" class="layui-btn" lay-submit="" lay-filter="btnSave" value="保存"/>
+        <input type="reset" class="layui-btn layui-btn-primary" value="重置"/>
+    </div>
+</form>
+<script th:src="@{/lib/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    layui.config({
+        base:'/js/layui-modules/'
+    }).use(['form','layer','laypage','tools'], function() {
+        var $ = layui.jquery,
+            form = layui.form(),
+            laypage = layui.laypage,
+            tools = layui.tools;
+        //监听提交
+        form.on('submit(btnSave)', function(data) {
+            if(data.field.password!=data.field.passwordConfirm) {
+                layer.msg('两次输入的密码不一致', {icon: 2,time:1000});
+                return false;
+            }
+            var roleIds = "";
+            var roleIdsElements = document.getElementsByName("roleIds");
+            for (var i = 0; i < roleIdsElements.length; i++) {
+                if (roleIdsElements[i].checked == true) {
+                    roleIds += roleIdsElements[i].value + ",";
+                }
+            }
+            if (roleIds.lastIndexOf(",") != -1) {
+                roleIds = roleIds.substring(0, roleIds.lastIndexOf(","));
+            }
+            data.field.roleIds = roleIds;
+
+            $.ajax({
+                type: 'POST',
+                url: /*[[@{/sys_user/save}]]*/'',
+                data: data.field,
+                success: function (result) {
+                    if (result.code == 0) {
+                        layer.msg('保存成功', {icon: 1, time:1000});
+                        setTimeout(function(){
+                            top.layer.closeAll('iframe');
+                            parent.refreshIframe();
+                        },800);
+                    } else {
+                        layer.msg('保存失败！'+result.msg, {icon: 2, time:1000});
+                    }
+                },
+                error: function (result, type) {
+                    layer.msg('保存失败！', { icon: 2, time:1000 });
+                }
+            });
+            return false;
+        });
+        //监听指定开关
+        form.on('switch(switchTest)', function(data){
+            data.value = this.checked?1:0;
+            console.log(data);
+        });
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

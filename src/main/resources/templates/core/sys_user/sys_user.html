@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>用户管理</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/css/layui-ext.css}" media="all"/>
+</head>
+<body class="layui-main">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>用户管理</legend>
+</fieldset>
+
+<form id="searchForm" class="layui-form" th:action="@{/sys_user}">
+    <input type="hidden" name="page" value="0"/>
+    <!--<div class="layui-inline">-->
+        <!--<label class="search-form-label">名称:</label>-->
+    <!--</div>-->
+    <!--<div class="layui-inline">-->
+        <!--<input class="layui-input" name="name" th:value="${obj.name}"/>-->
+    <!--</div>-->
+    <!--<div class="layui-inline" style="margin-right:20px;">-->
+        <!--<button class="layui-btn">-->
+            <!--查询-->
+        <!--</button>-->
+    <!--</div>-->
+    <div class="layui-inline">
+        <input type="button" class="layui-btn" id="addBtn" value="新增"/>
+    </div>
+    <div class="layui-inline">
+        <input type="button" class="layui-btn layui-btn-danger" id="btnDelete" value="删除"/>
+    </div>
+
+</form>
+
+<div>
+    <table class="layui-table" id="myTable">
+        <colgroup>
+            <col width="50"/>
+            <col/>
+        </colgroup>
+        <thead>
+        <tr>
+            <th><input type="checkbox" lay-ignore=""/></th>
+            <th>序号</th>
+            <th>用户名</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${pageList.content}">
+            <td><input type="checkbox" th:value="${item.id}" lay-ignore=""/></td>
+            <td>
+                <span th:text="${(pageList.number*pageList.size)+itemStat.index+1}"></span>
+            </td>
+            <td>
+                <span th:text="${item.username}"></span>
+            </td>
+            <td>
+                <span th:text="${#dates.format(item.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </td>
+            <td style="padding:0 15px;">
+                <button class="layui-btn layui-btn-small smt-update" th:attr="data-id=${item.id}">修改</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div id="paged"></div>
+</div>
+<script th:src="@{/lib/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    layui.config({
+        base:'/js/layui-modules/'
+    }).use(['form','element','layer','laypage','tools'], function(){
+        var element = layui.element(),
+            $ = layui.jquery,
+            form = layui.form,
+            laypage=layui.laypage,
+            tools=layui.tools;
+
+        //表格注册多选事件
+        tools.tableBindCheckClick("myTable");
+        laypage({
+            cont: 'paged', //容器。值支持id名、原生dom对象，jquery对象。
+            pages: [[${pageList.totalPages}]], //通过后台拿到的总页数
+            curr: [[${pageList.number}+1]], //当前页
+            skip: false, //是否开启跳页
+            jump: function(obj, first){ //触发分页后的回调
+                var jumpNum = obj.curr - 1;
+                if(!first) {
+                    $("input[name='page']").val(jumpNum);
+                    $("#searchForm").submit();
+                }
+            }
+        });
+        $('#addBtn').on('click',function(){
+            top.layer.open({
+                type:2,
+                area:['450px','380px'],
+                resize:false,
+                title:'用户添加',
+                content:'/sys_user/edit_view'
+            });
+        });
+        $('.smt-update').on('click',function(){
+            top.layer.open({
+                type:2,
+                area:['450px','400px'],
+                resize:false,
+                title:'用户编辑',
+                content:'/sys_user/edit_view?id='+$(this).data('id')
+            });
+        });
+        //删除事件
+        $('#btnDelete').on('click', function(){
+            var ids = tools.getTableCheckedRowIds("myTable");
+            if(!ids) return layer.msg('请先选择需要删除的记录。', {time:1500, icon:0});
+            layer.confirm('确定删除?', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    type: 'POST',
+                    url: /*[[@{/sys_user/delete}]]*/ '',
+                    data: {ids: ids },
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.code == 0) {
+                            layer.msg('删除成功', {icon: 1,time: 1000});
+                            setTimeout(function(){
+                                self.location = /*[[@{/sys_user}]]*/'';
+                            },800);
+
+                        }
+                        else {
+                            layer.msg('删除失败！'+result.msg, {time:1000,icon: 2});
+                        }
+                    },
+                    error: function(result, type) {
+                        layer.msg('删除失败！', { time:1000,icon: 2 });
+                    }
+                });
+
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

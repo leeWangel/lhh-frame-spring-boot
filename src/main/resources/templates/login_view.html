@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:include="temp :: projectName" th:remove="tag"></span> <span th:include="temp :: version" th:remove="tag"></span></title>
+	<div th:include="temp :: cssAndJs" th:remove="tag"></div>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/css/layui-ext.css}" media="all"/>
+    <style>
+        html{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-style: sans-serif;
+        }
+        body{
+            width: 100%;
+            height: 100%;
+            font-family: 'Open Sans',sans-serif;
+            margin: 0;
+            background:#4A374A url("/images/index_bg.jpg");
+            -webkit-background-size:100% 100%;
+            background-size:100% 100%;
+        }
+        #login{
+            position: absolute;
+            top: 50%;
+            left:50%;
+            margin: -150px 0 0 -150px;
+            width: 300px;
+            height: 300px;
+        }
+        #login h1{
+            color: #fff;
+            text-shadow:0 0 10px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        h1{
+            font-size: 2em;
+            margin: 0.67em 0;
+        }
+        input{
+            width: 278px;
+            height: 18px;
+            margin-bottom: 10px;
+            outline: none;
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+            /*text-shadow:1px 1px 1px;*/
+            border: 1px solid #eeeeee;
+            border-radius: 4px;
+            background-color: transparent;
+        }
+        .but{
+            width: 300px;
+            height: 38px;
+            display: block;
+            background-color: #1E9FFF;
+            border: 1px solid #1E9FFF;
+            color: #fff;
+            padding: 9px 14px;
+            font-size: 15px;
+            line-height: normal;
+            border-radius: 5px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <form id="login" class="layui-form" action="">
+        <h1>Dogost V1.0</h1>
+        <input type="text"  lay-verify="required" autocomplete="off" placeholder="用户名" name="u" autofocus="autofocus"/>
+        <input type="password" lay-verify="required" autocomplete="off" placeholder="密码" name="p" />
+        <input type="submit" class="layui-btn but" lay-submit="" lay-filter="btnSave" value="登录"/>
+    </form>
+    <script th:src="@{/lib/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    if ( window.parent.frames.length!=0 ){
+        window.parent.location.href= "/";
+    }
+    layui.config({
+        base:'/js/layui-modules/'
+    }).use(['form','layer','laypage','tools'], function() {
+        var $ = layui.jquery,
+            form = layui.form();
+        //监听提交
+        form.on('submit(btnSave)', function(data) {
+            $.ajax({
+                type: 'POST',
+                url: /*[[@{/login}]]*/'',
+                data: data.field,
+                success: function (result) {
+                    console.log('test');
+                    console.log(result);
+                    if (result.code == 0) {
+                        layer.msg('登录成功', {icon: 1, time:1000});
+                        setTimeout(function(){
+                            location.href = "/index";
+                        },800);
+                    } else {
+                        layer.msg('登录失败.'+result.msg, {icon: 2, time:1000});
+                    }
+                },
+                error: function (result, type) {
+                    layer.msg('登录失败！', { icon: 2 });
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>
+

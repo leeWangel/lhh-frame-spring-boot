@@ -1,0 +1,40 @@
+spring:
+  thymeleaf:
+    encoding: utf-8
+    content-type: text/html
+    cache: false
+  datasource:
+    url: jdbc:mysql://61.152.154.49:3306/test?characterEncoding=utf8&useSSL=true
+    username: root
+    password: hp64123456
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hivernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  http:
+    multipart:
+     max-file-size: 100MB
+     max-request-size: 100MB
+server:
+  port: 8891
+
+shiro:
+  realm-class: com.lhh.core.shiro.UserRealm
+  login-url: /
+  logout-url: /
+  success-url: /index
+  unauthorized-url: /unauthorized
+  globalSessionTimeout: 3600000
+  filter-chain-definitions:
+    /css/**: anon
+    /js/**: anon
+    /images/**: anon
+    /lib/**: anon
+    /login: anon
+    /unauthorized: anon
+    /**: authc

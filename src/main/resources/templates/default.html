@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title><span th:include="temp :: projectName" th:remove="tag"></span> <span th:include="temp :: version" th:remove="tag"></span></title>
+	<div th:include="temp :: cssAndJs" th:remove="tag"></div>
+    <link rel="stylesheet" th:href="@{/lib/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/css/layui-ext.css}" media="all"/>
+</head>
+<body class="layui-main">
+    <div class="layui-main">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend><span th:include="temp :: projectName" th:remove="tag"></span><span th:include="temp :: version" th:remove="tag"></span></legend>
+        </fieldset>
+    </div>
+<script th:src="@{/lib/layui/layui.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    layui.config({
+        base:'/lib/layui/lay/modules'
+    })
+    layui.use(['element','layer'], function(){
+        var element = layui.element(),$ = layui.jquery;
+    });
+</script>
+</body>
+</html>
+
