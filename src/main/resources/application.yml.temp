@@ -67,7 +67,7 @@ spring:
     cache: false
   datasource:
     url: jdbc:oracle:thin:@127.0.0.1:1521:orcl
-    username: yhap2
-    password: yhap2
+    username: system
+    password: system
   jpa:
     show-sql: true
