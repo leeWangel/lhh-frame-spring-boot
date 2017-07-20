@@ -4,9 +4,9 @@ spring:
     content-type: text/html
     cache: false
   datasource:
-    url: jdbc:mysql://61.152.154.49:3306/test?characterEncoding=utf8&useSSL=true
+    url: jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf8&useSSL=true
     username: root
-    password: hp64123456
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     database: mysql
