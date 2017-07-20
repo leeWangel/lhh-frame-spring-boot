@@ -43,7 +43,7 @@ server:
   port: 8888
 
 shiro:
-  realm-class: com.core.shiro.UserRealm
+  realm-class: com.lhh.core.shiro.UserRealm
   login-url: /
   logout-url: /
   success-url: /index
@@ -66,7 +66,7 @@ spring:
     # 开发阶段关闭缓存
     cache: false
   datasource:
-    url: jdbc:oracle:thin:@116.236.166.130:1521:orcl
+    url: jdbc:oracle:thin:@127.0.0.1:1521:orcl
     username: yhap2
     password: yhap2
   jpa:
